@@ -7,7 +7,7 @@ public class Deck {
 
   //Deck constructor creates deck/s.
   public Deck(int numberOfDecks) {
-    deck = new ArrayList<>();
+    deck = new ArrayList<Card>();
 
     for (Suit suit : Suit.values()) {
       for (NameAndValue nameAndValue : NameAndValue.values()) {
@@ -15,9 +15,7 @@ public class Deck {
           deck.add(new Card(nameAndValue, suit));
       }
     }
-    System.out.println(deck.size() + " Cards in Deck [" + numberOfDecks + "]");
   }
-
 
   //Print Deck [10] King of Hearts \n
   public String toString() {
@@ -26,12 +24,19 @@ public class Deck {
     for (Card card : deck) {
       textFormat.append(card.toString()).append("\n");
     }
+    System.out.println("Deck has " + deck.size());
     return textFormat.toString();
   }
 
-  //AddCard
-  public void addCard(Card card) {
+  //Adds a Card to the deck
+  public void addCardToDeck(Card card) {
     deck.add(card);
+  }
+
+  //Removes a card from the deck
+  public Card removeCardFromDeck() {
+    return deck.remove(0);
+
   }
 
 

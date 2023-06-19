@@ -12,4 +12,11 @@ public class Card {
     return String.format("[%d]-[", nameAndValue.valueOfCard) + nameAndValue + " of " + suit + "]";
   }
 
+  public NameAndValue getNameAndValue() {
+    return nameAndValue;
+  }
+
+  public Suit getSuit() {
+    return suit;
+  }
 }

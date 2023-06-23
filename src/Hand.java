@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-
 public class Hand {
   ArrayList<Card> hand;
 
@@ -23,6 +22,7 @@ public String toString() {
 
     Card theCard = deck.removeCardFromDeck();
     hand.add(theCard);
+
   }
 
 //Gets The value of the hand. Accounts for Ace 1 or 11
@@ -41,11 +41,11 @@ public int getValueOfHand() {
 }
 
    //Get rid of current hand : Before starting new game
-  public void discardHand() {
+  public String discardHand() {
   while (hand.size() != 0) {
     hand.remove(0);
   }
-    System.out.println("Hand has been discarded \n");
+    return "Hand has been discarded";
   }
 
   public ArrayList<Card> getHand() {

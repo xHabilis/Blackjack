@@ -1,10 +1,8 @@
-import java.util.ArrayList;
-
 public class Main {
   public static void main(String[] args) {
 
 
-Game newGame = new Game(1);
+Game gameTwo = new Game(1);
 
 
 

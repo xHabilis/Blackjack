@@ -6,7 +6,7 @@ public class Game {
   private Deck deck;
   private Dealer dealer;
   private int numberOfDecks;
-  private int draws, playerwins, playerLoses;
+  private int draws, wins, losses;
 
   public Game(int numberOfDecks) {
 
@@ -57,11 +57,16 @@ public class Game {
       dealer.showOpeningHand();
       player.showHand();
 
+      //Place Bets
+      player.placeBet();
+
       //Check both hands for blackJack
       openingHandCheck();
 
+
       //Player Moves
       player.hitOrStand(deck);
+
 
       //Check if player Busted
       checkIfPlayerBusted();
@@ -100,15 +105,19 @@ public class Game {
         scoreGame();
 
       } else {
+        //Dealer Wins
         dealer.showHand();
         System.out.println("Dealer has Blackjack: " + dealer.getName() + " Dealer WINS! \n");
 
-        playerLoses++;
+        losses++;
+
+        player.losesBet(player.getBet());
+
         scoreGame();
 
       }
       //Discard all hands before starting new game
-      discardPlayerAndDealerHand();
+      discardAllHands();
       startNewGame();
 
     }
@@ -116,11 +125,12 @@ public class Game {
     if (player.hasBlackjack()) {
       System.out.println("Player Has BlackJack: " + player.getName() + " WINS!");
 
-      playerwins++;
+      wins++;
+      player.winsBet(player.getBet());
       scoreGame();
 
       //If Player Wins: All users discard hands before starting new game
-      discardPlayerAndDealerHand();
+      discardAllHands();
 
       startNewGame();
 
@@ -133,17 +143,20 @@ public class Game {
     //Check for Winner
     if (dealer.getHand().getValueOfHand() > 21) {
       System.out.println(dealer.getName() + " Busted!");
-      playerwins++;
+      wins++;
+      player.winsBet(player.getBet());
       scoreGame();
 
     } else if (dealer.getHand().getValueOfHand() > player.getHand().getValueOfHand()) {
       System.out.println(player.getName() + " Lost!");
-      playerLoses++;
+      losses++;
+      player.losesBet(player.getBet());
       scoreGame();
 
     } else if (player.getHand().getValueOfHand() > dealer.getHand().getValueOfHand()) {
       System.out.println(player.getName() + " Wins!");
-      playerwins++;
+      wins++;
+      player.winsBet(player.getBet());
       scoreGame();
 
     } else {
@@ -196,10 +209,14 @@ public class Game {
 
     if (player.getHand().getValueOfHand() > 21) {
       System.out.println(player.getName() + " Busted! " + "[" + player.getHand().getValueOfHand() + "]");
-      playerLoses++;
+
+      losses++;
+
+      player.losesBet(player.getBet());
+
       scoreGame();
 
-      discardPlayerAndDealerHand();
+      discardAllHands();
 
       startNewGame();
     }
@@ -208,27 +225,26 @@ public class Game {
 
   public void scoreGame() {
     System.out.println("Game Score: \n" +
-      "Player Loses - [ " + playerLoses + " ]\n" +
-      "Player Wins - [ " + playerwins + " ]\n" +
-      "Draws - [ " + draws + " ]\n\n"
+      "Player Loses - [ " + losses + " ]\n" +
+      "Player Wins - [ " + wins + " ]\n" +
+      "Draws - [ " + draws + " ]\n" +
+      "Wallet: $" + player.getWallet() + "\n"
     );
   }
 
   public void welcomeScreen() {
     System.out.println("-".repeat(30));
     System.out.println("""
-
          WELCOME TO BLACKJACK
 
             [1] - HIT - Request additional Card
-
             [2] - Stand - No More Cards
-
         """);
+    System.out.println("Number of Decks in Game: " + numberOfDecks);
     System.out.println("-".repeat(30));
   }
 
-  public void discardPlayerAndDealerHand() {
+  public void discardAllHands() {
     System.out.println(player.getName() + player.getHand().discardHand());
     System.out.println(dealer.getName() + dealer.getHand().discardHand());
   }

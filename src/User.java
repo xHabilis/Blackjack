@@ -28,11 +28,6 @@ public class User {
     return hand.getValueOfHand() == 21;
   }
 
-  //Draw a new card from the deck
-  public void hitMe(Deck deck) {
-    hand.drawCardFromDeck(deck);
-  }
-
   public String getName() {
     return name;
   }
@@ -58,7 +53,6 @@ class Dealer extends User {
   public void showOpeningHand() {
 
     Card firstCard = super.getHand().getHand().get(0);
-    Card second = super.getHand().getHand().get(1);
 
     System.out.println("Dealer is showing: \n" + firstCard + "\n" + "2nd Card: [Face Down]" + "\n");
   }
@@ -66,8 +60,52 @@ class Dealer extends User {
 }
 
 class Player extends User {
+
+  private int wallet = 100;
+  private int bet = 0;
+
   public Player() {
     super.setName("Player ");
+  }
+
+  public void placeBet() {
+
+
+    Scanner scanner = new Scanner(System.in);
+    boolean validEntry = true;
+    int bet = 0;
+
+    //Ask the player to place a bet
+    System.out.println("Place a bet between [ $0 - " + "$" + getWallet() + " ]");
+
+    do {
+      try {
+        bet = scanner.nextInt();
+        validEntry = false;
+
+      } catch (InputMismatchException exception) {
+
+        System.out.println("""
+          Invalid:
+            Please enter a numeric amount.
+          """
+        );
+        scanner.next();
+      }
+
+
+    } while (validEntry);
+    this.bet = bet;
+
+    if (!isValidBet()) {
+      placeBet();
+    }
+
+
+  }
+
+  public boolean isValidBet() {
+    return bet <= getWallet();
   }
 
   public void hitOrStand(Deck deck) {
@@ -103,7 +141,7 @@ class Player extends User {
 
     } while (validEntry);
 
-    //If user HITS
+    //If player HITS
     if (choice == 1) {
 
       this.hit(deck);
@@ -117,11 +155,25 @@ class Player extends User {
   }
 
   public void playerStands() {
-    System.out.println("STAND: Dealer Moves Next");
+    System.out.println("STAND");
 
   }
 
+  public int getWallet() {
+    return wallet;
+  }
 
+  public void winsBet(int bet) {
+    this.wallet += bet;
+  }
+
+  public void losesBet(int bet) {
+    this.wallet -= bet;
+  }
+
+  public int getBet() {
+    return bet;
+  }
 }
 
 

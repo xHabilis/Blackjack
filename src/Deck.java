@@ -28,17 +28,11 @@ public class Deck {
     return textFormat.toString();
   }
 
-  //Adds a Card to the deck
-  public void addCardToDeck(Card card) {
-    deck.add(card);
-  }
-
   //Removes a card from the deck
   public Card removeCardFromDeck() {
     return deck.remove(0);
 
   }
-
 
   //Shuffle Cards
   public void shuffleCardDeck() {

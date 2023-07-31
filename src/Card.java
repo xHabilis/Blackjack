@@ -1,6 +1,6 @@
 public class Card {
-  private NameAndValue nameAndValue;
-  private Suit suit;
+  private final NameAndValue nameAndValue;
+  private final Suit suit;
 
   public Card(NameAndValue nameAndValue, Suit suit) {
     this.nameAndValue = nameAndValue;
@@ -9,6 +9,7 @@ public class Card {
 
   //Returns readable: [10]King of Hearts
   public String toString() {
+
     return String.format("[%d]-[", nameAndValue.valueOfCard) + nameAndValue + " of " + suit + "]";
   }
 
@@ -16,7 +17,4 @@ public class Card {
     return nameAndValue;
   }
 
-  public Suit getSuit() {
-    return suit;
-  }
 }

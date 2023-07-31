@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class User {
   private String name;
-  private Hand hand;
+  private final Hand hand;
 
 
   public User() {
@@ -17,9 +17,9 @@ public class User {
     this.showHand();
   }
 
-  //Returns Players hand and Value
+  //Returns User's hand and Value
   public void showHand() {
-    System.out.println(getName() + " Has " + hand.getValueOfHand() + "\n" + getHand());
+    System.out.println(getName() + " has " + hand.getValueOfHand() + "\n" + getHand());
 
   }
 
@@ -49,6 +49,7 @@ class Dealer extends User {
 
   }
 
+
   //Dealer: First hand, first card is face down, second card is face up
   public void showOpeningHand() {
 
@@ -61,15 +62,14 @@ class Dealer extends User {
 
 class Player extends User {
 
-  private int wallet = 100;
+  private int wallet = 0;
   private int bet = 0;
 
-  public Player() {
-    super.setName("Player ");
+  public Player(String playerName) {
+    super.setName(playerName);
   }
 
   public void placeBet() {
-
 
     Scanner scanner = new Scanner(System.in);
     boolean validEntry = true;
@@ -100,8 +100,6 @@ class Player extends User {
     if (!isValidBet()) {
       placeBet();
     }
-
-
   }
 
   public boolean isValidBet() {
@@ -110,12 +108,61 @@ class Player extends User {
 
   public void hitOrStand(Deck deck) {
 
+    int choice = getChoice();
+
+    //If player HITS
+    if (choice == 1) {
+
+      this.hit(deck);
+      //If under 21 after 21, offer option to Hit again
+      if (getHand().getValueOfHand() < 22) {
+        hitOrStand(deck);
+      }
+
+      //If player Stands
+    } else if (choice == 0) {
+      playerStands();
+    }
+    else {
+      hitOrStand(deck);
+    }
+
+}
+
+  public void playerStands() {
+    System.out.println("STAND");
+  }
+
+  public int getWallet() {
+    return wallet;
+  }
+
+  public void winsBet(int bet) {
+    this.wallet += (bet * 2);
+  }
+
+  public void losesBet(int bet) {
+    this.wallet -= bet;
+  }
+
+  public int getBet() {
+    return bet;
+  }
+
+  public void setWallet(int dollarsInWallet) {
+    this.wallet = dollarsInWallet;
+  }
+
+  public int getChoice() {
+
     Scanner scanner = new Scanner(System.in);
+
     boolean validEntry = true;
     int choice = 0;
 
     //Inform player of options: Prompt for a choice: Check data validity
     System.out.println("""
+
       Use the keyboard to make your next move:
 
       Enter [ 1 ] HIT
@@ -125,6 +172,7 @@ class Player extends User {
     do {
       try {
         choice = scanner.nextInt();
+
         validEntry = false;
 
       } catch (InputMismatchException exception) {
@@ -141,39 +189,10 @@ class Player extends User {
 
     } while (validEntry);
 
-    //If player HITS
-    if (choice == 1) {
-
-      this.hit(deck);
-
-      //If player Stands
-    }
-    if (choice == 0) {
-      playerStands();
-    }
+    return choice;
 
   }
 
-  public void playerStands() {
-    System.out.println("STAND");
-
-  }
-
-  public int getWallet() {
-    return wallet;
-  }
-
-  public void winsBet(int bet) {
-    this.wallet += bet;
-  }
-
-  public void losesBet(int bet) {
-    this.wallet -= bet;
-  }
-
-  public int getBet() {
-    return bet;
-  }
 }
 
 

@@ -2,13 +2,16 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Game {
-  private Player player;
-  private Deck deck;
-  private Dealer dealer;
-  private int numberOfDecks;
-  private int draws, wins, losses;
+  private final Player player;
+  private final Deck deck;
+  private final Dealer dealer;
+  private final int numberOfDecks;
+  private int draws;
+  private int wins;
+  private int losses;
 
-  public Game(int numberOfDecks) {
+
+  public Game(int numberOfDecks, String playerName, int startingWallet) {
 
     //Number of decks in game
     this.numberOfDecks = numberOfDecks;
@@ -18,8 +21,11 @@ public class Game {
     this.deck.shuffleCardDeck();
 
     //Creates all users in the game
-    this.player = new Player();
+    this.player = new Player(playerName);
     this.dealer = new Dealer();
+
+    //Set starting wallet size
+    player.setWallet(startingWallet);
 
     //1. Starts a round of blackjack
     startNewGame();
@@ -30,14 +36,14 @@ public class Game {
     //3. Player decides to hit or stand as needed
     player.hitOrStand(deck);
 
-    startNewGame();
 
+    startNewGame();
 
   }
   public void startNewGame() {
 
     //If Deck is NOT empty
-    if (deck.getDeckSize() > 5) {
+    if (deck.getDeckSize() >= 5) {
 
       //Display Game Information
       welcomeScreen();
@@ -53,25 +59,23 @@ public class Game {
       player.getHand().drawCardFromDeck(deck);
 
 
-      //Show cards to table
+      //Show dealer and player cards to table
       dealer.showOpeningHand();
       player.showHand();
 
-      //Place Bets
+      //Player places a Bet
       player.placeBet();
 
-      //Check both hands for blackJack
+      //Check both player and dealer's hands for blackJack
       openingHandCheck();
-
 
       //Player Moves
       player.hitOrStand(deck);
 
-
       //Check if player Busted
       checkIfPlayerBusted();
 
-      //Dealer hits until 17
+      //Dealer shows hand then Dealer Moves: Hits until 17
       dealer.showHand();
       while (dealer.getHand().getValueOfHand() < 17) {
         dealer.hit(deck);
@@ -81,14 +85,12 @@ public class Game {
       checkForWinner();
 
       //Discard Hands Before starting a new game
-      System.out.println("Player " + player.getHand().discardHand());
-      System.out.println("Dealer " + dealer.getHand().discardHand());
+      discardAllHands();
       startNewGame();
 
     } else {
       createNewDecksUserInput();
     }
-
 
   }
 
@@ -131,7 +133,6 @@ public class Game {
 
       //If Player Wins: All users discard hands before starting new game
       discardAllHands();
-
       startNewGame();
 
     }
@@ -143,25 +144,35 @@ public class Game {
     //Check for Winner
     if (dealer.getHand().getValueOfHand() > 21) {
       System.out.println(dealer.getName() + " Busted!");
+
       wins++;
+
       player.winsBet(player.getBet());
+
       scoreGame();
 
     } else if (dealer.getHand().getValueOfHand() > player.getHand().getValueOfHand()) {
       System.out.println(player.getName() + " Lost!");
+
       losses++;
+
       player.losesBet(player.getBet());
+
       scoreGame();
 
     } else if (player.getHand().getValueOfHand() > dealer.getHand().getValueOfHand()) {
       System.out.println(player.getName() + " Wins!");
+
       wins++;
+
       player.winsBet(player.getBet());
+
       scoreGame();
 
     } else {
       System.out.println("This is a Draw");
       draws++;
+
       scoreGame();
     }
   }
@@ -170,7 +181,7 @@ public class Game {
 
     Scanner scanner = new Scanner(System.in);
     boolean validEntry = true;
-    int choice = 0;
+    int numberOfDecks = 0;
 
     System.out.println("""
       The Deck is Empty!
@@ -181,7 +192,7 @@ public class Game {
     while (validEntry) {
       try {
 
-        choice = scanner.nextInt();
+        numberOfDecks = scanner.nextInt();
         validEntry = false;
 
       } catch (InputMismatchException exception) {
@@ -197,10 +208,14 @@ public class Game {
 
     }
     System.out.println("Final: ");
+
     scoreGame();
 
-    System.out.println("New Game: Number of Decks =  " + choice);
-    Game game = new Game(choice);
+    System.out.println("New Game: Number of Decks =  " + numberOfDecks);
+
+    //Create New Deck
+    Game game = new Game(numberOfDecks, player.getName(), player.getWallet());
+
     game.startNewGame();
 
   }
@@ -208,6 +223,7 @@ public class Game {
   public void checkIfPlayerBusted() {
 
     if (player.getHand().getValueOfHand() > 21) {
+
       System.out.println(player.getName() + " Busted! " + "[" + player.getHand().getValueOfHand() + "]");
 
       losses++;
@@ -222,7 +238,6 @@ public class Game {
     }
   }
 
-
   public void scoreGame() {
     System.out.println("Game Score: \n" +
       "Player Loses - [ " + losses + " ]\n" +
@@ -234,22 +249,29 @@ public class Game {
 
   public void welcomeScreen() {
     System.out.println("-".repeat(30));
-    System.out.println("""
-         WELCOME TO BLACKJACK
 
-            [1] - HIT - Request additional Card
-            [2] - Stand - No More Cards
+    System.out.println("""
+    -----------------------------------------------
+  |             WELCOME TO BLACKJACK               |
+  |                                                |
+  |         [1] - HIT - Request additional Card    |
+  |         [2] - STAND - No More Cards            |
+    ________________________________________________
         """);
     System.out.println("Number of Decks in Game: " + numberOfDecks);
+
     System.out.println("-".repeat(30));
   }
 
   public void discardAllHands() {
-    System.out.println(player.getName() + player.getHand().discardHand());
-    System.out.println(dealer.getName() + dealer.getHand().discardHand());
+
+    player.getHand().discardHand();
+    System.out.println(player.getName() + "'s hand discarded.");
+
+    dealer.getHand().discardHand();
+    System.out.println("Dealer's hand discarded.");
+
   }
-
-
 
 }
 

@@ -27,12 +27,4 @@ public enum NameAndValue {
   public String toString() {
     return nameOfCard;
   }
-
-  public String getNameOfCard() {
-    return nameOfCard;
-  }
-
-  public int getValueOfCard() {
-    return valueOfCard;
-  }
 }

@@ -41,11 +41,11 @@ public int getValueOfHand() {
 }
 
    //Get rid of current hand : Before starting new game
-  public String discardHand() {
+  public void discardHand() {
   while (hand.size() != 0) {
     hand.remove(0);
   }
-    return "Hand has been discarded";
+
   }
 
   public ArrayList<Card> getHand() {

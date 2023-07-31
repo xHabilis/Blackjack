@@ -3,11 +3,11 @@ import java.util.Collections;
 import java.util.Random;
 
 public class Deck {
-  private ArrayList<Card> deck;
+  private final ArrayList<Card> deck;
 
   //Deck constructor creates deck/s.
   public Deck(int numberOfDecks) {
-    deck = new ArrayList<Card>();
+    deck = new ArrayList<>();
 
     for (Suit suit : Suit.values()) {
       for (NameAndValue nameAndValue : NameAndValue.values()) {
